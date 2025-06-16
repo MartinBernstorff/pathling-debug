@@ -10,16 +10,17 @@ if __name__ == "__main__":
 
     result = (
         spark_df.extract(
-            "Appointment",
+            "Patient",
             columns=[
                 exp(
-                    "Appointment.participant.actor.resolve().ofType(Patient).address.where(use = 'home').extension('http://ehealth.sundhed.dk/fhir/StructureDefinition/ehealth-municipality-code').valueCoding.code",
+                    "Patient.address.where(use = 'home').extension('http://ehealth.sundhed.dk/fhir/StructureDefinition/ehealth-municipality-code').valueCoding.code",
                     "municipalityCode",
                 ),
             ],
         )
         .groupBy("municipalityCode")
         .agg({"*": "count"})
+        .sort("count(1)", ascending=False)
     )
 
     pass
